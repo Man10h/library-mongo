@@ -1,0 +1,43 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/thuvien
+  main:
+    allow-bean-definition-overriding: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 466972742513-1bklu1a4qjd0e9179m9doi8d1kc48ig4.apps.googleusercontent.com
+            client-secret: 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
+            authorization-grant-type:
+              - authorization_code
+              - password
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            scope:
+              - email
+              - profile
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
+            user-name-attribute: sub
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nguyenmanhlc10@gmail.com
+    password: bwph iddz qfvi kggp
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+jwt:
+  secretKey: ueKZ88pnk6JJSaiu8IqMPURPjcw04HF4gI/MiyH1cbA=
+kmsKey: f9PBP8KYT076zK3TKYGrPEAQfCI89AAQ4iMn/iYuXHI16AjWRuqtE40Pp+sVEsB90cFJfsMyHY3vOi8On57lNLHq7Aj0fe88dcRBLJ5TSLer1FtuyX9acByDnD8W/t9B
