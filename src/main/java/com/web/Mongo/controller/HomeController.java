@@ -1,13 +1,14 @@
 package com.web.Mongo.controller;
 
+import com.web.Mongo.model.collection.User;
 import com.web.Mongo.model.dto.UserLoginDTO;
 import com.web.Mongo.model.dto.UserRegisterDTO;
 import com.web.Mongo.service.AuthenticationService;
+import com.web.Mongo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/home")
@@ -28,6 +29,9 @@ public class HomeController {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private UserService userService;
 
 
     @PostMapping("/register")
@@ -62,5 +66,10 @@ public class HomeController {
     @GetMapping("/test")
     public ResponseEntity<String> test(){
         return ResponseEntity.ok(authenticationService.test());
+    }
+
+    @GetMapping("/userInfo")
+    public ResponseEntity<User> userInfo(@RequestParam(name = "token") String token){
+        return ResponseEntity.ok(userService.userInfo(token));
     }
 }

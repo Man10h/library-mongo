@@ -3,8 +3,12 @@ package com.web.Mongo.service.impl;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 import com.web.Mongo.model.collection.User;
 import com.web.Mongo.service.TokenService;
@@ -55,6 +59,20 @@ public class TokenServiceImpl implements TokenService {
             signedJWT.sign(jwsSigner);
             return signedJWT.serialize();
         }catch (Exception e){
+            return null;
+        }
+    }
+
+    @Override
+    public String getUsername(String token) {
+        try{
+           SignedJWT signedJWT = SignedJWT.parse(token);
+           JWSVerifier jwsVerifier = new MACVerifier(secretKey);
+           if(signedJWT.verify(jwsVerifier) && new Date(new Date().getTime()).before(signedJWT.getJWTClaimsSet().getExpirationTime())){
+               return signedJWT.getJWTClaimsSet().getSubject();
+           }
+           return null;
+        } catch (Exception e) {
             return null;
         }
     }

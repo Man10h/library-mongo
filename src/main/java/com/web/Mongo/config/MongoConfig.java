@@ -58,7 +58,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
         ClientEncryptionSettings clientEncryptionSettings = ClientEncryptionSettings.builder()
                 .keyVaultMongoClientSettings(mongoClientSettings)
                 .kmsProviders(getKmsProviders())
-                .keyVaultNamespace("thuvien.kms")
+                .keyVaultNamespace("thuvien.key")
                 .build();
         return ClientEncryptions.create(clientEncryptionSettings);
     }
@@ -67,7 +67,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     @Bean
     public MongoClient mongoClient() {
         AutoEncryptionSettings autoEncryptionSettings = AutoEncryptionSettings.builder()
-                .keyVaultNamespace("thuvien.kms")
+                .keyVaultNamespace("thuvien.key")
                 .kmsProviders(getKmsProviders())
                 .bypassAutoEncryption(true)
                 .build();

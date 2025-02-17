@@ -71,7 +71,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Verify verify = Verify.builder()
                 .verificationCodeExpiration((new Date(new Date().getTime() + 1000 * 60 * 60)))
                 .verificationCode(code)
+                .name(userRegisterDTO.getUsername())
                 .build();
+
 
         // Creat new User
         User user = User.builder()
@@ -146,6 +148,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return "user already verified";
         }
         if(!user.getVerify().getVerificationCode().equals(verificationCode) || new Date(new Date().getTime()).after(user.getVerify().getVerificationCodeExpiration())){
+            System.out.println(user.getVerify().getVerificationCode());
             return "failed to verify";
         }
         user.getVerify().setVerificationCode(null);
@@ -196,6 +199,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     public void generateDEKs(User user){
-        clientEncryption.createDataKey("local", encryptionUtil.keyAltName("code"));
+        clientEncryption.createDataKey("local", encryptionUtil.keyAltName(user.getVerify().getName()));
     }
 }

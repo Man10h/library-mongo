@@ -17,7 +17,9 @@ public class Verify {
     @Id
     private String id;
 
-    @ExplicitEncrypted(algorithm = "AEAD_AES_256_CBC_HMAC_SHA_512-Random", keyAltName = "code")
+    @ExplicitEncrypted(algorithm = "AEAD_AES_256_CBC_HMAC_SHA_512-Random", keyAltName = "/name")
     private String verificationCode;
+
+    private String name;
     private Date verificationCodeExpiration;
 }
