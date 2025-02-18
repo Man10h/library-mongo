@@ -2,19 +2,16 @@ package com.web.Mongo.model.collection;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.auditing.config.AuditingConfiguration;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
-import org.springframework.data.mongodb.core.mapping.ExplicitEncrypted;
 import org.springframework.data.mongodb.core.mapping.Unwrapped;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -33,7 +30,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    @DocumentReference(lazy = true)
+    @DocumentReference(lookup = "{'userId': ?#{#self._id}}")
     private List<RefreshToken> refreshTokens;
 
     @DocumentReference
@@ -53,6 +50,5 @@ public class User implements UserDetails {
         authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
         return authorities;
     }
-
 
 }

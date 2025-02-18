@@ -76,4 +76,19 @@ public class TokenServiceImpl implements TokenService {
             return null;
         }
     }
+
+    @Override
+    public boolean validateRefreshToken(String refreshToken) {
+        try{
+            SignedJWT signedJWT = SignedJWT.parse(refreshToken);
+            JWSVerifier jwsVerifier = new MACVerifier(secretKey);
+            if(signedJWT.verify(jwsVerifier)
+                    && new Date(new Date().getTime()).before(signedJWT.getJWTClaimsSet().getExpirationTime())){
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

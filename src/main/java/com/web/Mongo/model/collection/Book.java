@@ -1,7 +1,9 @@
 package com.web.Mongo.model.collection;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -24,10 +26,10 @@ public class Book {
     private String description;
     private Long like;
 
-    @DocumentReference(lookup = "{'book': '?#{#self._id}'}")
+    @DocumentReference(lookup = "{'book': ?#{#self._id}}")
     private List<Image> images;
 
-    @DocumentReference(lookup = "{'book': '?#{#self._id}'}")
+    @DocumentReference(lookup = "{'book': ?#{#self._id}}")
     private List<File> files;
 
     @DocumentReference(lazy = true)
@@ -35,4 +37,10 @@ public class Book {
 
     @Version
     private Long version;
+
+    @CreatedBy
+    private String createdBy;
+
+    @LastModifiedBy
+    private String lastModifiedBy;
 }

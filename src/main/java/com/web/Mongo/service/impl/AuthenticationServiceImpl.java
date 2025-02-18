@@ -7,6 +7,7 @@ import com.web.Mongo.model.collection.User;
 import com.web.Mongo.model.collection.Verify;
 import com.web.Mongo.model.dto.UserLoginDTO;
 import com.web.Mongo.model.dto.UserRegisterDTO;
+import com.web.Mongo.repository.RefreshTokenRepository;
 import com.web.Mongo.service.AuthenticationService;
 import com.web.Mongo.service.MailService;
 import com.web.Mongo.service.TokenService;
@@ -53,18 +54,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
     @Override
     public String register(UserRegisterDTO userRegisterDTO) {
         Role role = mongoTemplate.findOne(new Query(where("name").is("USER")), Role.class);
         User usernameUser = mongoTemplate
                 .findOne(new Query(where("username").is(userRegisterDTO.getUsername())), User.class);
         if(usernameUser != null){
-            return "failed";
+            return "username is in use";
         }
         User emailUser = mongoTemplate
                 .findOne(new Query(where("email").is(userRegisterDTO.getEmail())), User.class);
         if(emailUser != null){
-            return "failed";
+            return "email is in use";
         }
         String code = generateVerificationCode();
         // Create Verify
@@ -89,7 +93,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // generate DEKs
         generateDEKs(user);
-
         mongoTemplate.save(user);
 
         // Send VerificationCode
@@ -112,25 +115,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         if(!passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())
             && !user.getEnabled()){
-            return "failed";
+            return "wrong username or password";
         }
         UsernamePasswordAuthenticationToken authentication
                 = new UsernamePasswordAuthenticationToken(userLoginDTO.getUsername(), userLoginDTO.getPassword(), user.getAuthorities());
-        try{
-            authenticationManager.authenticate(authentication);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        authenticationManager.authenticate(authentication);
         // RefreshToken
-        List<RefreshToken> refreshTokens = mongoTemplate
-                .find(new Query(where("user").is(new ObjectId(user.getId()))), RefreshToken.class);
-        if(!refreshTokens.isEmpty()){
-            mongoTemplate
-                    .findAllAndRemove(new Query(where("user").is(new ObjectId(user.getId()))), RefreshToken.class);
-        }
+        mongoTemplate
+                .findAllAndRemove(new Query(where("userId").is((user.getId()))), RefreshToken.class);
         RefreshToken refreshToken = RefreshToken.builder()
                 .token(tokenService.generateRefreshToken(user))
-                .user(user)
+                .userId((user.getId()))
                 .build();
         mongoTemplate.save(refreshToken);
 
@@ -179,8 +174,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public String test() {
-        Document doc = (Document) mongoTemplate.getCollection("User").find(new Document("username", "tho462736"));
-        return doc.getString("role");
+        User user = mongoTemplate.findOne(new Query(where("name").is("nguyenmanhlc15")), User.class);
+        return user.getRefreshTokens().get(0).getToken();
     }
 
     public void sendVerificationCode(String email, String code, String username) {

@@ -9,6 +9,5 @@ import java.util.List;
 
 @Repository
 public interface RefreshTokenRepository extends MongoRepository<RefreshToken, String> {
-    List<RefreshToken> findByUser_Id(String userId);
-    void deleteByUser_Id(String id);
+
 }

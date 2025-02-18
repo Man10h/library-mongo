@@ -21,7 +21,6 @@ public class HomeController {
     /resend
     /verify
     /refreshToken
-    /resetPassword
     /forgotPassword
     /book?find
     /book?id
@@ -71,5 +70,10 @@ public class HomeController {
     @GetMapping("/userInfo")
     public ResponseEntity<User> userInfo(@RequestParam(name = "token") String token){
         return ResponseEntity.ok(userService.userInfo(token));
+    }
+
+    @GetMapping("/refreshToken")
+    public ResponseEntity<String> refreshToken(@RequestParam(name = "token") String token){
+        return ResponseEntity.ok(userService.refreshToken(token));
     }
 }

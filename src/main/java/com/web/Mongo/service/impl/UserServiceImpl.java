@@ -1,5 +1,6 @@
 package com.web.Mongo.service.impl;
 
+import com.web.Mongo.exception.ex.UserNotFoundException;
 import com.web.Mongo.model.collection.User;
 import com.web.Mongo.repository.UserRepository;
 import com.web.Mongo.service.TokenService;
@@ -27,5 +28,18 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         return mongoTemplate.findOne(new Query(where("username").is(username)), User.class);
+    }
+
+    @Override
+    public String refreshToken(String token) {
+        if(!tokenService.validateRefreshToken(token)){
+            return "fail to refresh token, pls login again";
+        }
+        String username = tokenService.getUsername(token);
+        User user = mongoTemplate.findOne(new Query(where("username").is(username)), User.class);
+        if(user == null){
+            throw new UserNotFoundException("User not found");
+        }
+        return tokenService.generateToken(user);
     }
 }

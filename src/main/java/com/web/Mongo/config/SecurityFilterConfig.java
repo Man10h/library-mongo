@@ -1,10 +1,13 @@
 package com.web.Mongo.config;
 
 import com.web.Mongo.repository.UserRepository;
+import com.web.Mongo.util.AuditorAwareImpl;
 import com.web.Mongo.util.MyCustomSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -29,9 +32,14 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebSecurity
+@EnableMongoAuditing(auditorAwareRef = "auditorProvider")
 public class SecurityFilterConfig {
 
 
+    @Bean
+    public AuditorAware<String> auditorProvider() {
+        return new AuditorAwareImpl();
+    }
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
