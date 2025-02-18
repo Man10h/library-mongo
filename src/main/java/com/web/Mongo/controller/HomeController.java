@@ -1,15 +1,20 @@
 package com.web.Mongo.controller;
 
+import com.web.Mongo.model.collection.Book;
 import com.web.Mongo.model.collection.User;
+import com.web.Mongo.model.dto.BookDTO;
 import com.web.Mongo.model.dto.UserLoginDTO;
 import com.web.Mongo.model.dto.UserRegisterDTO;
 import com.web.Mongo.service.AuthenticationService;
+import com.web.Mongo.service.BookService;
 import com.web.Mongo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/home")
 @RestController
@@ -31,6 +36,9 @@ public class HomeController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BookService bookService;
 
 
     @PostMapping("/register")
@@ -75,5 +83,20 @@ public class HomeController {
     @GetMapping("/refreshToken")
     public ResponseEntity<String> refreshToken(@RequestParam(name = "token") String token){
         return ResponseEntity.ok(userService.refreshToken(token));
+    }
+
+    @GetMapping("/forgotPassword")
+    public ResponseEntity<String> forgotPassword(@RequestParam(name = "email") String email){
+        return ResponseEntity.ok(authenticationService.forgotPassword(email));
+    }
+
+    @GetMapping("/book")
+    public ResponseEntity<List<Book>> book(@ModelAttribute BookDTO bookDTO){
+        return ResponseEntity.ok(bookService.find(bookDTO));
+    }
+
+    @GetMapping("/book")
+    public ResponseEntity<Book> findById(@RequestParam(name = "id") String id){
+        return ResponseEntity.ok(bookService.findById(id));
     }
 }

@@ -19,6 +19,6 @@ public class File {
     private String name;
     private String publicId;
 
-    @DocumentReference
-    private Book book;
+
+    private String bookId;
 }

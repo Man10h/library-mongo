@@ -18,6 +18,5 @@ public class MyFavouriteBook {
     @DocumentReference
     private User user;
 
-    @DocumentReference
-    private Book book;
+    private String bookId;
 }

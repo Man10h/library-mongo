@@ -8,6 +8,7 @@ public interface AuthenticationService {
     public String login(UserLoginDTO userLoginDTO);
     public String verify(String email, String verificationCode);
     public String resend(String email);
+    public String forgotPassword(String email);
 
     public String test();
 }

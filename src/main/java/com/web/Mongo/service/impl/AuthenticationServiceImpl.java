@@ -173,6 +173,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    public String forgotPassword(String email) {
+        User user = mongoTemplate.findOne(new Query(where("email").is(email)), User.class);
+        if(user == null){
+            throw new UsernameNotFoundException("user not found");
+        }
+        if(!user.getEnabled()){
+            return "user not enabled";
+        }
+        String newPassword = generateVerificationCode();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        mongoTemplate.save(user);
+        sendNewPassword(email, newPassword, user.getUsername());
+        return "check your email";
+    }
+
+    @Override
     public String test() {
         User user = mongoTemplate.findOne(new Query(where("name").is("nguyenmanhlc15")), User.class);
         return user.getRefreshTokens().get(0).getToken();
@@ -180,6 +196,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public void sendVerificationCode(String email, String code, String username) {
         String html = "<html>Verification Code: " + code + "</html>";
+        try{
+            mailService.sendVerificationCode(email, username, html);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendNewPassword(String email, String newPassword, String username) {
+        String html = "<html>New Password: " + newPassword + "</html>";
         try{
             mailService.sendVerificationCode(email, username, html);
         } catch (Exception e) {

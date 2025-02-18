@@ -20,16 +20,17 @@ public class Book {
     @Id
     private String id;
 
+    private String name;
     private String title;
     private String type;
     private String author;
     private String description;
     private Long like;
 
-    @DocumentReference(lookup = "{'book': ?#{#self._id}}")
+    @DocumentReference(lookup = "{'bookId': ?#{#self._id}}")
     private List<Image> images;
 
-    @DocumentReference(lookup = "{'book': ?#{#self._id}}")
+    @DocumentReference(lookup = "{'bookId': ?#{#self._id}}")
     private List<File> files;
 
     @DocumentReference(lazy = true)
