@@ -6,13 +6,16 @@ import com.web.Mongo.model.collection.Book;
 import com.web.Mongo.model.collection.File;
 import com.web.Mongo.model.collection.Image;
 import com.web.Mongo.model.dto.BookDTO;
+import com.web.Mongo.repository.FileRepository;
 import com.web.Mongo.service.BookService;
 import com.web.Mongo.service.CloudinaryService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -29,6 +34,7 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
 
     @Transactional(readOnly = true)
     public List<Book> find(BookDTO bookDTO) {
@@ -64,6 +70,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public String create(BookDTO bookDTO) {
+        if(bookDTO.getId() != null){
+            return "fail to create";
+        }
         List<String> types = bookDTO.getTypes();
         String type = String.join(",", types);
         Book book = Book.builder()
@@ -86,10 +95,10 @@ public class BookServiceImpl implements BookService {
                     .url((String) res.get("url"))
                     .publicId((String) res.get("public_id"))
                     .name((String) res.get("original_filename"))
-                    .bookId(book.getId())
+                    .bookId(new ObjectId(book.getId()))
                     .build();
             mongoTemplate.insert(file);
-            files.add(file);
+//            files.add(file);
         }
         for(MultipartFile multipartFile: bookDTO.getImages()) {
             Map res = cloudinaryService.upload(multipartFile);
@@ -97,15 +106,51 @@ public class BookServiceImpl implements BookService {
                     .url((String) res.get("url"))
                     .publicId((String) res.get("public_id"))
                     .name((String) res.get("original_filename"))
-                    .bookId(book.getId())
+                    .bookId(new ObjectId(book.getId()))
                     .build();
             mongoTemplate.insert(image);
-            images.add(image);
+//            images.add(image);
         }
-        book.setFiles(files);
-        book.setImages(images);
         mongoTemplate.save(book);
         return "created successfully";
     }
+
+    @Override
+    public String update(BookDTO bookDTO) {
+        if(bookDTO.getId() == null){
+            return "fail to update";
+        }
+        Book book = mongoTemplate.findById(bookDTO.getId(), Book.class);
+        if(book == null){
+            throw new BookNotFoundException("book not found");
+        }
+        if(bookDTO.getName() != null){
+            book.setName(bookDTO.getName());
+        }
+        if(bookDTO.getName() != null){
+            book.setTitle(bookDTO.getTitle());
+        }
+        if(bookDTO.getName() != null){
+            book.setDescription(bookDTO.getDescription());
+        }
+        if(!bookDTO.getTypes().isEmpty()){
+            book.setType(String.join(",", bookDTO.getTypes()));
+        }
+        mongoTemplate.save(book);
+        return "update successfully";
+    }
+
+    @Override
+    public String delete(String id) {
+        Book book = mongoTemplate.findById(id, Book.class);
+        if(book == null){
+            throw new BookNotFoundException("book not found");
+        }
+        mongoTemplate.remove(new Query(where("bookId").is(book.getId())), Image.class);
+        mongoTemplate.remove(new Query(where("bookId").is(book.getId())), File.class);
+        mongoTemplate.remove(book);
+        return "delete successfully";
+    }
+
 
 }

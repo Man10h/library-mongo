@@ -60,6 +60,7 @@ public class SecurityFilterConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/home/**").permitAll()
                         .requestMatchers("/admin/**").permitAll()
+                        .requestMatchers("/user/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

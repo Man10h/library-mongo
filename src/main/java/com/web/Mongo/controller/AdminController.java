@@ -22,4 +22,14 @@ public class AdminController {
     public ResponseEntity<String> create(@ModelAttribute BookDTO bookDTO) {
         return ResponseEntity.ok(bookService.create(bookDTO));
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<String> update(@ModelAttribute BookDTO bookDTO) {
+        return ResponseEntity.ok(bookService.update(bookDTO));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable(name = "id") String id) {
+        return ResponseEntity.ok(bookService.delete(id));
+    }
 }

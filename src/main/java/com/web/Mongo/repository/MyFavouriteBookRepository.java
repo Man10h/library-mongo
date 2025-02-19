@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MyFavouriteBookRepository extends MongoRepository<MyFavouriteBook, String> {
-    List<MyFavouriteBook> findByUser_Id(String userId);
+
 }

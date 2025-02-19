@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookDTO {
+    private String id;
     private String name;
     private String title;
     private String author;

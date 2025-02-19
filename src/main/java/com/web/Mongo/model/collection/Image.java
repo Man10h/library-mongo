@@ -1,9 +1,11 @@
 package com.web.Mongo.model.collection;
 
 import lombok.*;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Getter
 @Setter
@@ -19,5 +21,6 @@ public class Image {
     private String name;
     private String publicId;
 
-    private String bookId;
+    @Field(name = "bookId")
+    private ObjectId bookId;
 }

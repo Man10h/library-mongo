@@ -10,4 +10,6 @@ public interface BookService {
     public Book findById(String id);
 
     public String create(BookDTO bookDTO);
+    public String update(BookDTO bookDTO);
+    public String delete(String id);
 }

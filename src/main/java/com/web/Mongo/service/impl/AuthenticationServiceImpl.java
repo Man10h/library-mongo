@@ -121,16 +121,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 = new UsernamePasswordAuthenticationToken(userLoginDTO.getUsername(), userLoginDTO.getPassword(), user.getAuthorities());
         authenticationManager.authenticate(authentication);
         // RefreshToken
-        mongoTemplate
-                .findAllAndRemove(new Query(where("userId").is((user.getId()))), RefreshToken.class);
+        mongoTemplate.remove(new Query(where("userId").is((new ObjectId(user.getId())))), RefreshToken.class);
         RefreshToken refreshToken = RefreshToken.builder()
                 .token(tokenService.generateRefreshToken(user))
-                .userId((user.getId()))
+                .userId(new ObjectId(user.getId()))
                 .build();
-        user.getRefreshTokens().add(refreshToken);
         mongoTemplate.save(refreshToken);
-        mongoTemplate.save(user);
 
+        mongoTemplate.save(user);
         return tokenService.generateToken(user);
     }
 

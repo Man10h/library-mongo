@@ -30,6 +30,7 @@ public class User implements UserDetails {
 
     private String password;
 
+    @ReadOnlyProperty
     @DocumentReference(lookup = "{'userId': ?#{#self._id}}")
     private List<RefreshToken> refreshTokens;
 

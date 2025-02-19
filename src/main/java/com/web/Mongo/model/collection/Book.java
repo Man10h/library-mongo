@@ -1,10 +1,7 @@
 package com.web.Mongo.model.collection;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.Version;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
@@ -27,9 +24,11 @@ public class Book {
     private String description;
     private Long like;
 
+    @ReadOnlyProperty
     @DocumentReference(lookup = "{'bookId': ?#{#self._id}}")
     private List<Image> images;
 
+    @ReadOnlyProperty
     @DocumentReference(lookup = "{'bookId': ?#{#self._id}}")
     private List<File> files;
 
