@@ -95,7 +95,7 @@ public class HomeController {
         return ResponseEntity.ok(bookService.find(bookDTO));
     }
 
-    @GetMapping("/book")
+    @GetMapping
     public ResponseEntity<Book> findById(@RequestParam(name = "id") String id){
         return ResponseEntity.ok(bookService.findById(id));
     }

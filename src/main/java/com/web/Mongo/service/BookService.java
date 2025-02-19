@@ -8,4 +8,6 @@ import java.util.List;
 public interface BookService {
     public List<Book> find(BookDTO bookDTO);
     public Book findById(String id);
+
+    public String create(BookDTO bookDTO);
 }

@@ -15,7 +15,7 @@ public class BookDTO {
     private String title;
     private String author;
     private String description;
-    private List<String> type;
+    private List<String> types;
     private List<MultipartFile> images;
     private List<MultipartFile> files;
 }

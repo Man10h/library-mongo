@@ -127,7 +127,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .token(tokenService.generateRefreshToken(user))
                 .userId((user.getId()))
                 .build();
+        user.getRefreshTokens().add(refreshToken);
         mongoTemplate.save(refreshToken);
+        mongoTemplate.save(user);
 
         return tokenService.generateToken(user);
     }
