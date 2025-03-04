@@ -1,7 +1,13 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/thuvien
+      #localhost:27017
+      host: host.docker.internal
+      port: 27017
+      database: thuvien
+    redis:
+      host: host.docker.internal
+      port: 6379
   main:
     allow-bean-definition-overriding: true
 
@@ -16,6 +22,7 @@ spring:
               - authorization_code
               - password
             redirect-uri: http://localhost:8080/login/oauth2/code/google
+            #localhost:8080
             scope:
               - email
               - profile
@@ -38,6 +45,9 @@ spring:
           starttls:
             enable: true
             required: true
+  cache:
+    type: redis
 jwt:
   secretKey: ueKZ88pnk6JJSaiu8IqMPURPjcw04HF4gI/MiyH1cbA=
 kmsKey: f9PBP8KYT076zK3TKYGrPEAQfCI89AAQ4iMn/iYuXHI16AjWRuqtE40Pp+sVEsB90cFJfsMyHY3vOi8On57lNLHq7Aj0fe88dcRBLJ5TSLer1FtuyX9acByDnD8W/t9B
+

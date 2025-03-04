@@ -53,7 +53,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     @Bean
     public ClientEncryption clientEncryption() {
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString("mongodb://localhost:27017"))
+                .applyConnectionString(new ConnectionString("mongodb://host.docker.internal:27017"))
                 .build();
         ClientEncryptionSettings clientEncryptionSettings = ClientEncryptionSettings.builder()
                 .keyVaultMongoClientSettings(mongoClientSettings)
@@ -74,7 +74,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .autoEncryptionSettings(autoEncryptionSettings)
-                .applyConnectionString(new ConnectionString("mongodb://localhost:27017"))
+                .applyConnectionString(new ConnectionString("mongodb://host.docker.internal:27017"))
                 .build();
         return MongoClients.create(mongoClientSettings);
     }

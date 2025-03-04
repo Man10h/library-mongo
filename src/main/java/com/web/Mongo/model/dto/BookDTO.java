@@ -1,6 +1,7 @@
 package com.web.Mongo.model.dto;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -19,4 +20,8 @@ public class BookDTO {
     private List<String> types;
     private List<MultipartFile> images;
     private List<MultipartFile> files;
+
+    public String toString(){
+        return id + name + title + author + description;
+    }
 }

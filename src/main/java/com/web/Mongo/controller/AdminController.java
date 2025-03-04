@@ -30,6 +30,6 @@ public class AdminController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable(name = "id") String id) {
-        return ResponseEntity.ok(bookService.delete(id));
+        return ResponseEntity.ok(bookService.deleteById(id));
     }
 }

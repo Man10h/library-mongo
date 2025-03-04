@@ -11,6 +11,9 @@ import com.web.Mongo.service.BookService;
 import com.web.Mongo.service.CloudinaryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
@@ -27,6 +30,7 @@ import java.util.Map;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Service
+@EnableCaching
 public class BookServiceImpl implements BookService {
 
     @Autowired
@@ -36,6 +40,7 @@ public class BookServiceImpl implements BookService {
     private CloudinaryService cloudinaryService;
 
 
+    @Cacheable(value = "book", key = "#bookDTO.toString()")
     @Transactional(readOnly = true)
     public List<Book> find(BookDTO bookDTO) {
         Criteria criteria = new Criteria();
@@ -58,6 +63,7 @@ public class BookServiceImpl implements BookService {
 
         return mongoTemplate.aggregate(aggregation, "book", Book.class).getMappedResults();
     }
+
 
     @Transactional(readOnly = true)
     public Book findById(String id) {
@@ -115,6 +121,7 @@ public class BookServiceImpl implements BookService {
         return "created successfully";
     }
 
+    @CacheEvict(value = "book", key = "#bookDTO.toString()")
     @Override
     public String update(BookDTO bookDTO) {
         if(bookDTO.getId() == null){
@@ -141,11 +148,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String delete(String id) {
+    public String deleteById(String id) {
         Book book = mongoTemplate.findById(id, Book.class);
         if(book == null){
             throw new BookNotFoundException("book not found");
         }
+        return delete(book);
+    }
+
+    @CacheEvict(value = "book", allEntries = true)
+    public String delete(Book book) {
         mongoTemplate.remove(new Query(where("bookId").is(book.getId())), Image.class);
         mongoTemplate.remove(new Query(where("bookId").is(book.getId())), File.class);
         mongoTemplate.remove(book);

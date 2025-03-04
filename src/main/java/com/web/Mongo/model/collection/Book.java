@@ -1,5 +1,6 @@
 package com.web.Mongo.model.collection;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -33,6 +34,7 @@ public class Book {
     private List<File> files;
 
     @DocumentReference(lazy = true)
+    @JsonIgnore
     private List<MyFavouriteBook> myFavouriteBooks;
 
     @Version
@@ -43,4 +45,8 @@ public class Book {
 
     @LastModifiedBy
     private String lastModifiedBy;
+
+    public String toString(){
+        return id + name + title + author + description;
+    }
 }

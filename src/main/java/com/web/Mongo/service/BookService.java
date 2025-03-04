@@ -11,5 +11,5 @@ public interface BookService {
 
     public String create(BookDTO bookDTO);
     public String update(BookDTO bookDTO);
-    public String delete(String id);
+    public String deleteById(String id);
 }
