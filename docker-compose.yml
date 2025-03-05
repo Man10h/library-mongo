@@ -1,0 +1,41 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      spring_mail_host: smtp.gmail.com
+      spring_mail_port: 587
+      spring_mail_username: nguyenmanhlc10@gmail.com
+      spring_mail_password: bwph iddz qfvi kggp
+      google_client_id: 466972742513-1bklu1a4qjd0e9179m9doi8d1kc48ig4.apps.googleusercontent.com
+      google_client_secret: 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
+    depends_on:
+      - mongo
+      - redis
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    environment:
+      mongo_host: mongo
+      mongo_port: 27017
+      mongo_database: thuvien
+    volumes:
+      - mongo_data:/var/lib/mongo_data
+  redis:
+    image: redis:7.4.2
+    ports:
+      - 6379:6379
+    environment:
+      redis_host: redis
+      redis_port: 6379
+    volumes:
+      - redis_data:/var/lib/redis_data
+volumes:
+  redis_data:
+
+  mongo_data:
+
